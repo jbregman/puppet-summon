@@ -13,3 +13,19 @@ include summon
 
 summon::provider { 'keyring': }
 summon::provider { 'conjur': }
+
+$secrets_file = "
+MYSECRET !var ${::domain}/${environment}/secret/path
+MY_OTHER_SECRET !var ${::domain}/${environment}/secret/path2
+"
+
+file {'/opt/secrets.yml':
+	content => "$secrets_file",
+}
+
+exec {'test':
+	command => "summon -p summon-conjur --yaml 'MYSECRET: !var secret/path' printenv MYSECRET",
+	environment => 'HOME=/Users/joshbregman',
+	user => 'joshbregman',
+	path => '/usr/local/bin:/usr/bin',
+}
