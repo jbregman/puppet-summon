@@ -14,17 +14,14 @@ define summon::exec (
 		fail("Unknown provider $provider")
 	}
 
-	user {'run-as-user':
-		name => "$user",
-		ensure => present,		
-	}
+	$home_var = "homedir_${user}"
+	$home = inline_template("<%= scope.lookupvar(@home_var) %>")
 
 	exec {'summon':
        		command => "summon -p $summon_provider -f $secrets_file $command",
-       		environment => 'HOME=/Users/joshbregman',
-       		user => "$::User['run-as-user']['home']",
+       		environment => "HOME=$home",
+       		user => "$user",
        		path => "/usr/local/bin:$path",
-		require => [User['run-as-user']],
 	}
 
 
