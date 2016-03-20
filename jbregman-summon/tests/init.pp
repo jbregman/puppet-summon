@@ -15,17 +15,19 @@ summon::provider { 'keyring': }
 summon::provider { 'conjur': }
 
 $secrets_file = "
-MYSECRET !var ${::domain}/${environment}/secret/path
-MY_OTHER_SECRET !var ${::domain}/${environment}/secret/path2
+MYSECRET: !var ${environment}/secret/path
 "
 
 file {'/opt/secrets.yml':
 	content => "$secrets_file",
 }
 
-exec {'test':
-	command => "summon -p summon-conjur --yaml 'MYSECRET: !var secret/path' printenv MYSECRET",
-	environment => 'HOME=/Users/joshbregman',
+summon::exec {'test':
+	command => "printenv MYSECRET",
+	secrets_file => '/opt/secrets.yml',
+	provider => 'conjur',
 	user => 'joshbregman',
-	path => '/usr/local/bin:/usr/bin',
+	path => '/usr/bin',
+	require => [File['/opt/secrets.yml']],
 }
+
