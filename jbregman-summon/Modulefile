@@ -9,4 +9,4 @@ project_page 'UNKNOWN'
 
 ## Add dependencies, if any:
 dependency 'stankevich/python', '>= 1.11.0'
-dependency 'puppetlabs/apt', '>= 2.2.2'
+dependency 'puppetlabs/git', '>= 0.4.0'

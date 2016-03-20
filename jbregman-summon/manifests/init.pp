@@ -37,16 +37,48 @@
 #
 class summon {
 
-    package {'curl':
-	ensure => present
+    if $::osfamily == 'Darwin' {
+	require homebrew
+    	package {'curl':
+		ensure => present,
+		provider => brew,
+    	}
+
+	exec {'download-summon':
+		command => 'curl -sSL https://github.com/conjurinc/summon/releases/download/v0.4.0/summon_v0.4.0_darwin_amd64.tar.gz > /tmp/summon_v0.4.0_darwin_amd64.tar.gz',
+		require => [Package['curl']],
+		path=> '/usr/bin:/bin',
+		unless => 'test -f /tmp/summon_v0.4.0_darwin_amd64.tar.gz',	
+	}
+
+	exec {'unzip-summon':
+		command => 'gzip -d /tmp/summon_v0.4.0_darwin_amd64.tar.gz',
+		path=> '/usr/bin:/bin',
+		unless => 'test -f /tmp/summon_v0.4.0_darwin_amd64.tar',
+		require => [Exec['download-summon']],
+	}
+
+	exec {'install-summon':
+		command => 'tar -xvf /tmp/summon_v0.4.0_darwin_amd64.tar',
+		path => '/usr/bin:/bin',
+		cwd => '/usr/local/bin',
+		unless => 'test -f /usr/local/bin/summon',
+		require => [Exec['unzip-summon']],
+	}
+
+    } else {
+    	package {'curl':
+		ensure => present
+    	}
+    	exec {'install-summon':
+		command => 'curl -sSL https://raw.githubusercontent.com/conjurinc/summon/master/install.sh | bash',
+        	require => [Package['curl']],
+		path=> '/usr/bin:/bin',
+        	unless => 'test -f /usr/local/bin/summon',
+
+    	}		
     }
 
-    exec {'download-installer':
-	command => 'curl -sSL https://raw.githubusercontent.com/conjurinc/summon/master/install.sh | bash',
-        require => [Package['curl']],
-	path=> '/usr/bin:/bin',
-        unless => 'test -f /usr/local/bin/summon',
 
-    }		
 
 }

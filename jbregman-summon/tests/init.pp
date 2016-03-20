@@ -12,3 +12,4 @@
 include summon
 
 summon::provider { 'keyring': }
+summon::provider { 'conjur': }
