@@ -11,11 +11,12 @@ define summon::provider::keyring (
 		}
 	} else {
 		class { 'python':
-			version => '3.5.1',
+			version => '2.7.1',
 		}	
 
 		python::pip { 'keyring':
 			pkgname => 'keyring',
+			version => '5.3",
 		}		
 
 		package { 'python-dbus':
@@ -33,7 +34,7 @@ define summon::provider::keyring (
 	}
 
 	exec { 'install-keyring-provider':
-		command => 'curl https://raw.githubusercontent.com/conjurinc/summon-keyring/master/ring.py >> /usr/local/lib/summon/keyring.py',
+		command => 'curl https://raw.githubusercontent.com/conjurinc/summon-keyring/master/ring.py >> /usr/local/lib/summon/ring.py',
 	        require => [
 			Package['curl'],
 			File['/usr/local/lib/summon']
@@ -42,9 +43,9 @@ define summon::provider::keyring (
 
 	}
 
-	file { '/usr/local/lib/summon/keyring.py':
+	file { '/usr/local/lib/summon/ring.py':
 		ensure => file,
-		mode => 0777,
+		mode => "0777",
 	}
 
 }

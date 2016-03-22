@@ -11,23 +11,20 @@
 #
 include summon
 
-summon::provider { 'keyring': }
-summon::provider { 'conjur': }
-
-$secrets_file = "
-MYSECRET: !var ${environment}/secret/path
+$my_secrets_file = "
+MYSECRET: !var secret/path
+MYSECRET2: !var secret/path2
 "
 
+
 file {'/opt/secrets.yml':
-	content => "$secrets_file",
-}
+	content => "$my_secrets_file",
+} ->
 
 summon::exec {'test':
-	command => "printenv MYSECRET",
+	command => "ruby /opt/build_conf.rb",
 	secrets_file => '/opt/secrets.yml',
-	provider => 'conjur',
 	user => 'joshbregman',
-	path => '/usr/bin',
 	require => [File['/opt/secrets.yml']],
-}
-
+	output => "/Users/joshbregman/my_secrets.conf"
+} 
