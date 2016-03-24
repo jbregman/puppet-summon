@@ -1,0 +1,19 @@
+{
+  "name": "conjur-summon",
+  "version": "0.1.0",
+  "author": "Conjur Inc.",
+  "summary": "Conjur",
+  "license": "Apache 2.0",
+  "source": "https://github.com/conjurinc/puppet",
+  "project_page": "https://github.com/conjurinc/puppet",
+  "issues_url": "https://github.com/conjurinc/puppet/issues",
+  "operatingsystem_support": [
+    {
+    "operatingsystem":"RedHat",
+    "operatingsystemrelease":[ "5.0", "6.0" ,"7.0"]
+    }
+  ],
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+  ]
+}
